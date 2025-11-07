@@ -1,5 +1,5 @@
 import express from 'express'
-import { authenticate, requirePermission } from '../middleware/auth.js'
+import { requireAuth, requirePermission } from '../middleware/auth.js'
 import {
   generateBlogContent,
   generateContentForTopic,
@@ -16,7 +16,7 @@ const router = express.Router()
  * Generate blog content from news sources
  * Requires ARTICLE_CREATE permission
  */
-router.post('/generate', authenticate, requirePermission('ARTICLE_CREATE'), async (req, res) => {
+router.post('/generate', requireAuth, requirePermission('ARTICLE_CREATE'), async (req, res) => {
   try {
     const {
       sourcesLimit = 50,
@@ -61,7 +61,7 @@ router.post('/generate', authenticate, requirePermission('ARTICLE_CREATE'), asyn
  * Generate content for a specific topic
  * Requires ARTICLE_CREATE permission
  */
-router.post('/topic', authenticate, requirePermission('ARTICLE_CREATE'), async (req, res) => {
+router.post('/topic', requireAuth, requirePermission('ARTICLE_CREATE'), async (req, res) => {
   try {
     const { topic, ...options } = req.body
 
@@ -91,7 +91,7 @@ router.post('/topic', authenticate, requirePermission('ARTICLE_CREATE'), async (
  * Test content generation with a specific URL
  * Requires ARTICLE_CREATE permission
  */
-router.post('/test', authenticate, requirePermission('ARTICLE_CREATE'), async (req, res) => {
+router.post('/test', requireAuth, requirePermission('ARTICLE_CREATE'), async (req, res) => {
   try {
     const { url, aiProvider } = req.body
 
@@ -120,7 +120,7 @@ router.post('/test', authenticate, requirePermission('ARTICLE_CREATE'), async (r
  * GET /api/content-gen/stats
  * Get content generation statistics
  */
-router.get('/stats', authenticate, async (req, res) => {
+router.get('/stats', requireAuth, async (req, res) => {
   try {
     const stats = getGenerationStats()
     res.json(stats)
@@ -138,7 +138,7 @@ router.get('/stats', authenticate, async (req, res) => {
  * Reset content generation statistics
  * Requires ADMIN permission
  */
-router.post('/stats/reset', authenticate, requirePermission('ARTICLE_DELETE'), async (req, res) => {
+router.post('/stats/reset', requireAuth, requirePermission('ARTICLE_DELETE'), async (req, res) => {
   try {
     const stats = resetStats()
     res.json({
@@ -158,7 +158,7 @@ router.post('/stats/reset', authenticate, requirePermission('ARTICLE_DELETE'), a
  * GET /api/content-gen/sources
  * Get list of configured news sources
  */
-router.get('/sources', authenticate, async (req, res) => {
+router.get('/sources', requireAuth, async (req, res) => {
   try {
     const sources = getNewsSources()
     res.json({
@@ -180,7 +180,7 @@ router.get('/sources', authenticate, async (req, res) => {
  * Scan news sources without generating articles
  * Requires ARTICLE_CREATE permission
  */
-router.post('/scan', authenticate, requirePermission('ARTICLE_CREATE'), async (req, res) => {
+router.post('/scan', requireAuth, requirePermission('ARTICLE_CREATE'), async (req, res) => {
   try {
     const {
       limit = 50,

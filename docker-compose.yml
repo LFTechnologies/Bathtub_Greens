@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: news-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=node_news
+    networks:
+      - news-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./node-news-api
+      dockerfile: Dockerfile
+    container_name: news-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - MONGO_URI=mongodb://mongodb:27017/node_news
+    env_file:
+      - ./node-news-api/.env
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - news-network
+    volumes:
+      - ./node-news-api:/app
+      - /app/node_modules
+    command: npm start
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: news-admin
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    networks:
+      - news-network
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+      - /app/.next
+
+networks:
+  news-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local

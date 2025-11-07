@@ -1,5 +1,5 @@
 import express from 'express'
-import { authenticate, requirePermission } from '../middleware/auth.js'
+import { requireAuth, requirePermission } from '../middleware/auth.js'
 import AffiliateLink from '../models/AffiliateLink.js'
 
 const router = express.Router()
@@ -8,7 +8,7 @@ const router = express.Router()
  * GET /api/affiliate/links
  * List all affiliate links
  */
-router.get('/links', authenticate, async (req, res) => {
+router.get('/links', requireAuth, async (req, res) => {
   try {
     const { status, program, category } = req.query
     const filter = {}
@@ -36,7 +36,7 @@ router.get('/links', authenticate, async (req, res) => {
  * POST /api/affiliate/links
  * Create new affiliate link
  */
-router.post('/links', authenticate, requirePermission('ARTICLE_CREATE'), async (req, res) => {
+router.post('/links', requireAuth, requirePermission('ARTICLE_CREATE'), async (req, res) => {
   try {
     const {
       name,
@@ -90,7 +90,7 @@ router.post('/links', authenticate, requirePermission('ARTICLE_CREATE'), async (
  * PUT /api/affiliate/links/:id
  * Update affiliate link
  */
-router.put('/links/:id', authenticate, requirePermission('ARTICLE_EDIT'), async (req, res) => {
+router.put('/links/:id', requireAuth, requirePermission('ARTICLE_EDIT'), async (req, res) => {
   try {
     const link = await AffiliateLink.findByIdAndUpdate(
       req.params.id,
@@ -113,7 +113,7 @@ router.put('/links/:id', authenticate, requirePermission('ARTICLE_EDIT'), async 
  * DELETE /api/affiliate/links/:id
  * Delete affiliate link
  */
-router.delete('/links/:id', authenticate, requirePermission('ARTICLE_DELETE'), async (req, res) => {
+router.delete('/links/:id', requireAuth, requirePermission('ARTICLE_DELETE'), async (req, res) => {
   try {
     const link = await AffiliateLink.findByIdAndDelete(req.params.id)
 
@@ -162,7 +162,7 @@ router.get('/redirect/:shortCode', async (req, res) => {
  * GET /api/affiliate/stats
  * Get affiliate statistics
  */
-router.get('/stats', authenticate, async (req, res) => {
+router.get('/stats', requireAuth, async (req, res) => {
   try {
     const totalLinks = await AffiliateLink.countDocuments({ status: 'active' })
     const totalClicks = await AffiliateLink.aggregate([
