@@ -210,4 +210,43 @@ router.post('/scan', requireAuth, requirePermission(Actions.ARTICLE_CREATE), asy
   }
 })
 
+/**
+ * POST /api/content-gen/generate-single
+ * Generate a single article from scanned news
+ * Requires ARTICLE_CREATE permission
+ */
+router.post('/generate-single', requireAuth, requirePermission(Actions.ARTICLE_CREATE), async (req, res) => {
+  try {
+    const { article, aiProvider = 'both' } = req.body
+
+    if (!article || !article.url) {
+      return res.status(400).json({
+        success: false,
+        error: 'Article with URL is required'
+      })
+    }
+
+    console.log('[API] Single article generation requested:', article.title)
+
+    // Use testContentGeneration function which generates a single article from URL
+    const result = await testContentGeneration(article.url, {
+      aiProvider,
+      metadata: {
+        source: article.source,
+        originalTitle: article.title,
+        publishedAt: article.publishedAt
+      }
+    })
+
+    res.json(result)
+  } catch (error) {
+    console.error('[API] Single article generation failed:', error)
+    res.status(500).json({
+      success: false,
+      error: error.message
+    })
+  }
+})
+
 export default router
+// Updated
