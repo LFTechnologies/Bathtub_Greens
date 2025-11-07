@@ -9,6 +9,13 @@ const ArticleSchema = new mongoose.Schema({
   cleanedContent:  { type: String, default: '' },
   aiSummary:       { type: String, default: '' },
   tags:            { type: [String], default: [] },
+  imageUrl:        { type: String, default: '' },
+
+  // SEO
+  metaTitle:       { type: String, default: '' },
+  metaDescription: { type: String, default: '' },
+  slug:            { type: String, default: '', index: true },
+  canonicalUrl:    { type: String, default: '' },
 
   // Source / attribution
   source:            { type: String, default: 'twitter' }, // e.g. 'twitter','rapidapi','manual'
@@ -28,6 +35,20 @@ const ArticleSchema = new mongoose.Schema({
   createdBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   approvedBy:  { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   publishedAt: { type: Date },
+
+  // Monetization
+  isSponsored:      { type: Boolean, default: false },
+  sponsorName:      { type: String, default: '' },
+  sponsorUrl:       { type: String, default: '' },
+  sponsorLogoUrl:   { type: String, default: '' },
+  disclosureText:   { type: String, default: '' },
+  sponsoredAmount:  { type: Number, default: 0 },
+  affiliateLinks:   [{ type: mongoose.Schema.Types.ObjectId, ref: 'AffiliateLink' }],
+
+  // Analytics
+  views:       { type: Number, default: 0 },
+  shares:      { type: Number, default: 0 },
+  adRevenue:   { type: Number, default: 0 },
 }, { timestamps: true, strict: true })
 
 // De-dupe safety: only one record per (source, sourceId)

@@ -334,6 +334,72 @@ docker-compose up -d
 - Vercel Frontend: $0
 - **Total: ~$5-10/month**
 
+## Monetization
+
+This platform includes comprehensive monetization features. See [MONETIZATION_GUIDE.md](./MONETIZATION_GUIDE.md) for complete details.
+
+### Revenue Streams
+
+**1. Google AdSense**
+- Automated ad placement components
+- Responsive ad units
+- Expected: $10-500/month (depends on traffic)
+
+**2. Affiliate Marketing**
+- Built-in link management system
+- Click tracking and analytics
+- Expected: $50-1,000/month
+
+**3. Sponsored Content**
+- Sponsored article support
+- Disclosure management
+- Expected: $200-2,000/month
+
+**4. Premium/Subscriptions** (optional)
+- Newsletter monetization
+- Members-only content
+- Expected: $100-5,000/month
+
+### Quick Monetization Setup
+
+1. **Apply for Google AdSense**: https://adsense.google.com
+2. **Add API keys** to `.env`:
+```env
+NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+3. **Enable cookie consent** (already included)
+4. **Create affiliate links** via `/admin/affiliate`
+5. **Track revenue** in `/admin/monetization`
+
+### Included Monetization Features
+
+- ✅ Google AdSense components (banner, in-article, sidebar)
+- ✅ Google Analytics integration with event tracking
+- ✅ Cookie consent banner (GDPR compliant)
+- ✅ Privacy Policy & Terms of Service pages
+- ✅ Affiliate link management system with tracking
+- ✅ Sponsored content support
+- ✅ SEO optimization components
+- ✅ Monetization dashboard
+- ✅ Analytics and revenue tracking
+
+### Potential Monthly Revenue
+
+**With 50K monthly views:**
+- AdSense: $150-300
+- Affiliates: $100-200
+- Sponsored: $500 (1-2 posts)
+- **Total: $750-1,000/month**
+
+**With 200K monthly views:**
+- AdSense: $600-1,200
+- Affiliates: $400-800
+- Sponsored: $1,500 (3-4 posts)
+- **Total: $2,500-3,500/month**
+
+See [MONETIZATION_GUIDE.md](./MONETIZATION_GUIDE.md) for detailed strategies and setup instructions.
+
 ## Development
 
 ### Testing Content Generation

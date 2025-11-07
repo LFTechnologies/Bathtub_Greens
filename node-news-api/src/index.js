@@ -15,6 +15,7 @@ import commentRoutes from './routes/comments.js'
 import userRoutes from './routes/users.js'
 import contentGenRoutes from './routes/contentGen.js'
 import healthRoutes from './routes/health.js'
+import affiliateRoutes from './routes/affiliate.js'
 
 // ⬇️ NEW: bring in Article + RapidAPI helpers
 import Article from './models/Article.js'
@@ -84,6 +85,7 @@ app.use('/api/articles', articleRoutes)
 app.use('/api/comments', commentRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/content-gen', contentGenRoutes)
+app.use('/api/affiliate', affiliateRoutes)
 app.use('/api/ingest', ingestRoutes)
 
 /**
