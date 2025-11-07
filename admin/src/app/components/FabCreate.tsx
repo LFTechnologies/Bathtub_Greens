@@ -16,10 +16,13 @@ export default function FabCreate() {
   // Only show on admin routes, except the create page itself
   const isAdmin = pathname?.startsWith('/admin')
   const isCreate = pathname === '/admin/articles/create'
-  if (!isAdmin || isCreate) return null
 
   // Keyboard shortcut: "c" to open create page
+  // Must be called before early return to comply with Rules of Hooks
   useEffect(() => {
+    // Only set up event listener if we're showing the FAB
+    if (!isAdmin || isCreate) return
+
     const onKey = (e: KeyboardEvent) => {
       // ignore when user is typing in an input/textarea/select/contenteditable
       const t = e.target as HTMLElement | null
@@ -37,7 +40,9 @@ export default function FabCreate() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [router])
+  }, [router, isAdmin, isCreate])
+
+  if (!isAdmin || isCreate) return null
 
   return (
     <Link

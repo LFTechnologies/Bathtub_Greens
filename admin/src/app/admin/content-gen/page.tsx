@@ -39,9 +39,13 @@ export default function ContentGenerationPage() {
         fetchFullContent: false
       }
 
+      const token = localStorage.getItem('token')
       const res = await fetch('/api/content-gen/scan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       })
 
@@ -153,9 +157,13 @@ export default function ContentGenerationPage() {
           status: `Generating article ${i + 1} of ${articlesToGenerate.length}: "${article.title.substring(0, 50)}..."`
         })
 
+        const token = localStorage.getItem('token')
         const res = await fetch('/api/content-gen/generate-single', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({
             article,
             aiProvider: config.aiProvider
