@@ -7,11 +7,14 @@ import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
 import { connectDB } from './config/db.js'
+import { initCron } from './jobs/cron.js'
 
 import authRoutes from './routes/auth.js'
 import articleRoutes from './routes/articles.js'
 import commentRoutes from './routes/comments.js'
 import userRoutes from './routes/users.js'
+import contentGenRoutes from './routes/contentGen.js'
+import healthRoutes from './routes/health.js'
 
 // ⬇️ NEW: bring in Article + RapidAPI helpers
 import Article from './models/Article.js'
@@ -75,12 +78,12 @@ app.use(rateLimit({ windowMs: 60_000, max: 200 }))
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
+app.use('/api/health', healthRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/articles', articleRoutes)
 app.use('/api/comments', commentRoutes)
 app.use('/api/users', userRoutes)
-// src/index.js
-
+app.use('/api/content-gen', contentGenRoutes)
 app.use('/api/ingest', ingestRoutes)
 
 /**
@@ -197,6 +200,10 @@ app.get('/api/test/highlights', async (req, res) => {
 
 const PORT = process.env.PORT || 4000
 await connectDB()
+
+// Initialize scheduled jobs
+initCron()
+
 app.listen(PORT, () => console.log(`API on http://localhost:${PORT}`))
 
 /* ---------- helpers ---------- */
