@@ -6,7 +6,8 @@ import {
   generateContentForTopic,
   getGenerationStats,
   resetStats,
-  testContentGeneration
+  testContentGeneration,
+  generateAndSaveSingleArticle
 } from '../services/contentGenerator.js'
 import { scanNewsSources, getNewsSources } from '../services/newsScanner.js'
 
@@ -217,7 +218,7 @@ router.post('/scan', requireAuth, requirePermission(Actions.ARTICLE_CREATE), asy
  */
 router.post('/generate-single', requireAuth, requirePermission(Actions.ARTICLE_CREATE), async (req, res) => {
   try {
-    const { article, aiProvider = 'both' } = req.body
+    const { article, aiProvider = 'both', autoPublish = false } = req.body
 
     if (!article || !article.url) {
       return res.status(400).json({
@@ -228,14 +229,10 @@ router.post('/generate-single', requireAuth, requirePermission(Actions.ARTICLE_C
 
     console.log('[API] Single article generation requested:', article.title)
 
-    // Use testContentGeneration function which generates a single article from URL
-    const result = await testContentGeneration(article.url, {
+    // Use the new generateAndSaveSingleArticle function to properly save the article
+    const result = await generateAndSaveSingleArticle(article, {
       aiProvider,
-      metadata: {
-        source: article.source,
-        originalTitle: article.title,
-        publishedAt: article.publishedAt
-      }
+      autoPublish
     })
 
     res.json(result)

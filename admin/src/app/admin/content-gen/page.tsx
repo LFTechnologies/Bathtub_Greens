@@ -10,7 +10,7 @@ export default function ContentGenerationPage() {
   const [loading, setLoading] = useState(false)
   const [scannedArticles, setScannedArticles] = useState<any[]>([])
   const [selectedArticles, setSelectedArticles] = useState<Set<number>>(new Set())
-  const [topicClusters, setTopicClusters] = useState<any[]>([])
+  const [topicClusters, setTopicClusters] = useState<any>(null)
   const [generatedArticles, setGeneratedArticles] = useState<any[]>([])
   const [progress, setProgress] = useState({ current: 0, total: 0, status: '' })
   const [error, setError] = useState<string | null>(null)
@@ -34,7 +34,7 @@ export default function ContentGenerationPage() {
 
     try {
       const payload = {
-        limit: parseInt(config.sourcesLimit),
+        limit: config.sourcesLimit,
         categories: config.categories ? config.categories.split(',').map(s => s.trim()) : null,
         fetchFullContent: false
       }

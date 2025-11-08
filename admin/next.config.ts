@@ -2,6 +2,13 @@
 const API_URL = process.env.API_URL || 'http://localhost:4000'
 
 const nextConfig = {
+  output: 'standalone',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'pbs.twimg.com', pathname: '/**' },

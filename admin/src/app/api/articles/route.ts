@@ -18,11 +18,15 @@ function authHeaders() {
 async function proxyForward(method: 'GET'|'POST'|'PATCH'|'DELETE', req: NextRequest) {
   const url = new URL(req.url)
   const target = `${TARGET}${url.search}`
+
+  // Get Authorization header from incoming request
+  const authHeader = req.headers.get('Authorization')
+
   const init: RequestInit = {
     method,
     headers: {
       ...(method !== 'GET' && method !== 'DELETE' ? { 'Content-Type': 'application/json' } : {}),
-      ...authHeaders(),
+      ...(authHeader ? { 'Authorization': authHeader } : authHeaders()),
     },
     body: method === 'GET' ? undefined : await req.text(),
   }

@@ -1,6 +1,7 @@
 import { scanNewsSources, filterArticles } from './newsScanner.js'
 import { summarizeArticle, generateCommentary } from './ai.js'
 import Article from '../models/Article.js'
+import { v4 as uuid } from 'uuid'
 
 /**
  * Content generation statistics
@@ -107,6 +108,7 @@ export async function generateBlogContent(options = {}) {
           tags: aiResult.tags || [],
           imageUrl: article.image,
           source: article.source,
+          sourceId: uuid(), // Generate unique ID to allow multiple commentaries on same source
           sourceUrl: article.url,
           sourceAuthor: article.author,
           sourcePublishedAt: article.publishedAt,
@@ -292,6 +294,114 @@ export async function testContentGeneration(url, options = {}) {
     }
   } catch (error) {
     console.error('[ContentGenerator] Test failed:', error.message)
+    return {
+      success: false,
+      error: error.message
+    }
+  }
+}
+
+/**
+ * Generate and save a single article from a URL
+ */
+export async function generateAndSaveSingleArticle(articleData, options = {}) {
+  const { aiProvider = 'both', autoPublish = false } = options
+
+  console.log(`[ContentGenerator] Generating and saving article: ${articleData.title}`)
+
+  try {
+    // Check if article already exists
+    const existing = await Article.findOne({ sourceUrl: articleData.url })
+    if (existing) {
+      console.log(`[ContentGenerator] Article already exists: ${existing._id}`)
+      return {
+        success: false,
+        error: 'Article already exists',
+        existingId: existing._id
+      }
+    }
+
+    // Fetch article content
+    const axios = (await import('axios')).default
+    const response = await axios.get(articleData.url, {
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)'
+      }
+    })
+
+    // Basic HTML to text conversion
+    let content = response.data
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+    // Generate AI summary
+    const aiResult = await summarizeArticle({
+      title: articleData.title,
+      url: articleData.url,
+      text: content,
+      provider: aiProvider
+    })
+
+    console.log(`[ContentGenerator] AI analysis complete using ${aiResult.provider}`)
+
+    // Generate commentary
+    let commentary = aiResult.commentary || ''
+    if (commentary.length < 200) {
+      console.log('[ContentGenerator] Generating additional commentary...')
+      commentary = await generateCommentary({
+        title: aiResult.title || articleData.title,
+        summary: aiResult.summary,
+        key_points: aiResult.key_points,
+        url: articleData.url
+      })
+    }
+
+    // Create article in database
+    const newArticle = new Article({
+      title: aiResult.title || articleData.title,
+      summary: aiResult.summary,
+      rawContent: content,
+      cleanedContent: commentary,
+      aiSummary: JSON.stringify({
+        key_points: aiResult.key_points,
+        sentiment: aiResult.sentiment,
+        provider: aiResult.provider
+      }),
+      tags: aiResult.tags || [],
+      imageUrl: articleData.image,
+      source: articleData.source,
+      sourceId: uuid(), // Generate unique ID to allow multiple commentaries on same source
+      sourceUrl: articleData.url,
+      sourceAuthor: articleData.author,
+      sourcePublishedAt: articleData.publishedAt,
+      sourceName: articleData.source,
+      status: autoPublish ? 'published' : 'pending_review',
+      ingestion: 'auto-generated',
+      publishedAt: autoPublish ? new Date() : null
+    })
+
+    await newArticle.save()
+    stats.totalGenerated++
+
+    console.log(`[ContentGenerator] Article saved: ${newArticle._id}`)
+
+    return {
+      success: true,
+      generated: 1,
+      article: {
+        id: newArticle._id,
+        title: newArticle.title,
+        status: newArticle.status,
+        source: newArticle.source,
+        url: newArticle.sourceUrl
+      }
+    }
+  } catch (error) {
+    console.error(`[ContentGenerator] Error saving article "${articleData.title}":`, error.message)
     return {
       success: false,
       error: error.message

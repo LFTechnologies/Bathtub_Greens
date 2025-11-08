@@ -1,10 +1,21 @@
 // Keep everything relative by default
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? ''  // leave empty in dev
 
+function getAuthHeaders(): Record<string, string> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  if (token) {
+    return { 'Authorization': `Bearer ${token}` }
+  }
+  return {}
+}
+
 export async function apiPost(path: string, body?: any) {
   const r = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders()
+    },
     body: JSON.stringify(body || {}),
   })
   const text = await r.text().catch(()=>'')
@@ -20,7 +31,9 @@ export async function apiPost(path: string, body?: any) {
 }
 
 export async function apiGet(path: string) {
-  const r = await fetch(`${API_BASE}${path}`)
+  const r = await fetch(`${API_BASE}${path}`, {
+    headers: getAuthHeaders()
+  })
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return r.json()
 }
@@ -28,7 +41,10 @@ export async function apiGet(path: string) {
 export async function apiPatch(path: string, body?: any) {
   const r = await fetch(`${API_BASE}${path}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders()
+    },
     body: JSON.stringify(body || {}),
   })
   const text = await r.text().catch(()=>'')
@@ -39,7 +55,10 @@ export async function apiPatch(path: string, body?: any) {
 export async function apiDelete(path: string, body?: any) {
   const r = await fetch(`${API_BASE}${path}`, {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders()
+    },
     body: JSON.stringify(body || {}),
   })
   const text = await r.text().catch(()=>'')
