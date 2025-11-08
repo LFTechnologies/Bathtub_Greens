@@ -13,8 +13,15 @@ export default function DashboardPage() {
   })
 
   const [loading, setLoading] = useState(true)
+  const [userRole, setUserRole] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
+    // Check user role
+    const role = localStorage.getItem('userRole')
+    setUserRole(role)
+    setIsAdmin(role === 'ADMIN')
+
     loadStats()
   }, [])
 
@@ -233,6 +240,99 @@ export default function DashboardPage() {
             statusColor="green"
           />
         </div>
+
+        {/* Admin Only Section */}
+        {isAdmin && (
+          <>
+            <div className="mt-12 mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                    🛡️ Admin Controls
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    System administration and monitoring
+                  </p>
+                </div>
+                <span className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-xs font-semibold">
+                  Admin Only
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* User Management Card */}
+              <Link href="/admin/users" className="block">
+                <div className="bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl p-6 text-white card-hover">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="text-4xl">👥</div>
+                    <span className="bg-white/20 backdrop-blur-lg px-3 py-1 rounded-full text-sm">
+                      Admin
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">User Management</h3>
+                  <p className="text-white/80 mb-4">
+                    Manage user accounts, roles, and permissions
+                  </p>
+                  <div className="flex items-center text-sm">
+                    <span className="font-medium">Manage Users →</span>
+                  </div>
+                </div>
+              </Link>
+
+              {/* Token Usage Card */}
+              <Link href="/admin/token-usage" className="block">
+                <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white card-hover">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="text-4xl">📊</div>
+                    <span className="bg-white/20 backdrop-blur-lg px-3 py-1 rounded-full text-sm">
+                      Monitoring
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">AI Token Usage</h3>
+                  <p className="text-white/80 mb-4">
+                    Monitor API costs and consumption per user
+                  </p>
+                  <div className="flex items-center text-sm">
+                    <span className="font-medium">View Usage →</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-2xl border-2 border-red-200 dark:border-red-800 p-6">
+              <h3 className="text-lg font-bold text-red-900 dark:text-red-200 mb-3">
+                🔐 Administrator Privileges
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900 dark:text-white mb-2">👥 User Control</div>
+                  <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>✓ Create/edit/delete users</li>
+                    <li>✓ Assign roles & permissions</li>
+                    <li>✓ Activate/deactivate accounts</li>
+                  </ul>
+                </div>
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900 dark:text-white mb-2">📊 Monitoring</div>
+                  <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>✓ View all token usage</li>
+                    <li>✓ Track costs per user</li>
+                    <li>✓ Monitor API consumption</li>
+                  </ul>
+                </div>
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                  <div className="font-semibold text-gray-900 dark:text-white mb-2">⚙️ System Access</div>
+                  <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>✓ Full content access</li>
+                    <li>✓ API key management</li>
+                    <li>✓ System configuration</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
