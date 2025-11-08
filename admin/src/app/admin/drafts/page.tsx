@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-type PublishChannel = 'blog' | 'api' | 'email' | 'sms' | 'download'
+type PublishChannel = 'blog' | 'api' | 'email' | 'sms' | 'download' | 'showcase'
 
 export default function DraftsPage() {
   const router = useRouter()
@@ -448,6 +448,35 @@ export default function DraftsPage() {
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         Publish directly to your blog. Articles will be visible at /articles
                       </p>
+                    </div>
+                  </label>
+
+                  {/* Public Showcase */}
+                  <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+                    <input
+                      type="checkbox"
+                      checked={selectedChannels.has('showcase')}
+                      onChange={() => toggleChannel('showcase')}
+                      className="mt-1 h-5 w-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
+                        <span className="text-xl">✨</span>
+                        <span>Public Showcase</span>
+                        <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs rounded">
+                          Admin Only
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        Publish to public showcase feed at /showcase. Demonstrates AI capabilities to visitors.
+                      </p>
+                      <Link
+                        href="/showcase"
+                        target="_blank"
+                        className="text-sm text-purple-600 hover:underline mt-1 inline-block"
+                      >
+                        → View Public Showcase
+                      </Link>
                     </div>
                   </label>
 
