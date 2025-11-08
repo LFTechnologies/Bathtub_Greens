@@ -147,8 +147,11 @@ export async function scanNewsSources(options = {}) {
   for (const source of sources) {
     // Filter by category if specified
     if (categories && source.category && !categories.includes(source.category)) {
+      console.log(`[NewsScanner] Skipping ${source.name} (category filter: ${categories.join(',')})`)
       continue
     }
+
+    console.log(`[NewsScanner] Scanning ${source.name} (${source.type})...`)
 
     try {
       let articles = []

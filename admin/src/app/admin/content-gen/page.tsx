@@ -18,7 +18,7 @@ export default function ContentGenerationPage() {
   const [config, setConfig] = useState({
     sourcesLimit: 50,
     aiProvider: 'openai',
-    categories: 'technology',
+    categories: '',
     requireKeywords: '',
     excludeKeywords: 'sports, celebrity',
     minContentLength: 200,
@@ -368,18 +368,28 @@ function ConfigureStep({ config, setConfig, onScan, loading }: any) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Categories</label>
+          <label className="block text-sm font-medium mb-2">
+            Source Categories (leave empty for all sources)
+            <span className="block text-xs font-normal text-gray-500 mt-1">
+              Filter news sources: general, technology, world
+            </span>
+          </label>
           <input
             type="text"
             value={config.categories}
             onChange={(e) => setConfig({ ...config, categories: e.target.value })}
-            placeholder="technology, business, science"
+            placeholder="Leave empty to scan all sources"
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Required Keywords (will filter scan results)</label>
+          <label className="block text-sm font-medium mb-2">
+            Topic Keywords (filters articles by content)
+            <span className="block text-xs font-normal text-gray-500 mt-1">
+              Enter topics to find: AI, trump, climate, etc.
+            </span>
+          </label>
           <input
             type="text"
             value={config.requireKeywords}
