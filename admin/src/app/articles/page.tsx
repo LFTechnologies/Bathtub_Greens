@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState} from "react";
+import Link from "next/link";
 import { apiGet as _apiGet, apiPatch as _apiPatch, apiDelete as _apiDelete } from "../lib/api"; // assumes you have these; fallback shims below
 
 
@@ -153,7 +154,21 @@ export default function AdminArticlesPage() {
     <div className="min-h-screen bg-[#121212] text-zinc-100">
       <header className="sticky top-0 z-10 border-b border-zinc-800/80 bg-[#121212]/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-semibold tracking-tight">Articles</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-semibold tracking-tight">Articles</h1>
+            <Link
+              href="/dashboard"
+              className="rounded-xl border border-zinc-700/60 bg-zinc-900/60 px-3 py-1.5 text-sm hover:border-zinc-600 hover:bg-zinc-800"
+            >
+              ← Dashboard
+            </Link>
+            <Link
+              href="/admin/content-gen"
+              className="rounded-xl border border-green-700/60 bg-green-900/20 px-3 py-1.5 text-sm text-green-400 hover:border-green-600 hover:bg-green-900/30"
+            >
+              + Generate Content
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             <input
               value={q}
