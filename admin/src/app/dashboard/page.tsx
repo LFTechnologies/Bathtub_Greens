@@ -57,7 +57,9 @@ export default function DashboardPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/dashboard" className="text-blue-600 font-medium">Dashboard</Link>
               <Link href="/articles" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Articles</Link>
+              <Link href="/admin/drafts" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Drafts</Link>
               <Link href="/admin/content-gen" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">AI Content</Link>
+              <Link href="/admin/api-keys" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">API Keys</Link>
               <Link href="/admin/monetization" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Revenue</Link>
             </nav>
 
@@ -158,18 +160,24 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <ActionButton
-              icon="✍️"
-              title="Create Article"
-              description="Write manually"
-              href="/admin/articles/create"
+              icon="📝"
+              title="My Drafts"
+              description="View saved content"
+              href="/admin/drafts"
             />
             <ActionButton
               icon="🔄"
               title="Generate Content"
               description="Let AI do the work"
               href="/admin/content-gen"
+            />
+            <ActionButton
+              icon="🔑"
+              title="API Keys"
+              description="Manage access"
+              href="/admin/api-keys"
             />
             <ActionButton
               icon="📊"
